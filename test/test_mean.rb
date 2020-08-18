@@ -24,9 +24,9 @@ class MeanTest < Minitest::Test
     result = splitArray(values.size,4)
     assert_equal(result, expectedResult)
   end
-  def setValues(size, weight, scale=[])
+  def setValues(size, weight, scale: [], list: [])
     @@testSet     = Array.new(size) {rand**Math.log(rand).abs*1000}
-    @@testSet     = Array.new(size) {rand}
+    @@testSet     = list.empty? ? Array.new(size) {rand}  : list
     @@testWeights = Array.new(size) {weight}
     unless scale.empty? then
       splittedIndices = splitArray(size, scale.size)
@@ -41,10 +41,8 @@ class MeanTest < Minitest::Test
     @@expectedRunMean = [0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]
   end
   def setupSmallWeighted
-    @@testSet = (0..9).to_a
     @@expectedMean = 4.5
-    @@testWeights = Array.new(@@testSet.size) {1.0}
-    setValues(@@testSet.size,[0.5,1,2])
+    setValues(10,1.0,scale: [0.5,1,2],list: (0..9).to_a)
   end
   def setupMedium
     size = 720
@@ -64,11 +62,26 @@ class MeanTest < Minitest::Test
   end
 
   def setup
-    setupMedium
+    case ENV['SETUP']
+    when 's'
+      setupSmall
+    when 'sw'
+      setupSmallWeighted
+    when 'm'
+      setupMedium
+    when 'mw'
+      setupMediumDifferentWeights
+    when 'l'
+      setupLarge
+    else
+      setupSmall
+    end
   end
 
   def test_setup_10
-    setupMediumDifferentWeights
+    setupSmallWeighted
+    pp @@testWeights
+    pp @@testSet
   end
 
   def test_arith_jfe
