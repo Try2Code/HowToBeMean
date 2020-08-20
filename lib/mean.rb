@@ -10,7 +10,7 @@ module MeanProcesing
   end
 
   def MeanProcesing.running_mean(list)
-    m = Array.new(list.size)
+    m    = Array.new(list.size)
     m[0] = list[0]
     (1...list.size).each {|i|
       m[i] = (i*m[i-1] + list[i])/(i+1).to_f # j = i+1
@@ -24,20 +24,20 @@ module MeanProcesing
   end
 
   def MeanProcesing.arith_jfe(list)
-    size = list.size.to_f
+    size   = list.size.to_f
     values = list.map {|v| v/size}
     values.reduce(:+)
   end
 
   def MeanProcesing.weighted_running_mean(list,weights)
     # precompute partial sums of weights
-    sum_weights = Array.new(weights.size) {0}
+    sum_weights    = Array.new(weights.size) {0}
     sum_weights[0] = weights[0]
     (1...sum_weights.size).each {|i|
       sum_weights[i] = sum_weights[i-1] + weights[i]
     }
 
-    m = Array(list.size)
+    m    = Array(list.size)
     m[0] = list[0]*weights[0]
     (1...list.size).each {|i|
       # wgt = 1/i (dtime/(current_time - start_time)
